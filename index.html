@@ -5,17 +5,32 @@
     <body>
         <p><button id="connect" value="connect">connect</button><span id="connect-message"></span></p>
         <p><select id="teams"></select></p>
+        <p><select id="boards"></select></p>
     </body>
     <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
     <script src="https://api.trello.com/1/client.js?key=d9f4154055496716605cf40fc5ef31ea"></script>
     <script>
+        authorize = function() {
+            Trello.authorize({
+                type: 'popup',
+                name: 'Trello Automation Tool',
+                scope: {
+                    read: 'true',
+                    write: 'true' },
+                expiration: 'never',
+                success: authenticationSuccess,
+                error: authenticationFailure
+            });
+
+        };
+
         authenticationSuccess = function() {
-            $("connect-message").text("success!");
+            $("#connect-message").text("success!");
             Trello.get("members/me/organizations", {}, loadingTeams);
         };
 
         authenticationFailure = function() {
-            $("connect-message").text("error!");
+            $("#connect-message").text("error!");
         };
 
         loadingTeams = function(teams) {
@@ -27,19 +42,25 @@
             });
         };
 
-        $(function() {
-            $("#connect").click(function() {
-                Trello.authorize({
-                  type: 'popup',
-                  name: 'Trello Automation Tool',
-                  scope: {
-                    read: 'true',
-                    write: 'true' },
-                  expiration: 'never',
-                  success: authenticationSuccess,
-                  error: authenticationFailure
-                });
+        loadTeam = function(team_id) {
+            Trello.get("organization/" + team_id + "/boards/", {}, loadingBoards);
+        };
+
+        loadingBoards = function(boards) {
+            $.each(boards, function (i, board) {
+                $('#boards').append($('<option>', { 
+                    value: board.id,
+                    text : board.displayName 
+                }));
             });
+        }
+
+        $(function() {
+            $("#connect").click(authorize);
+            $("#teams").change(function(e) {
+                loadTeam($("#teams:selected", this).value);
+            });
+
             if (Trello.authorized()) {
                 $("#connect").hide();
                 Trello.get("members/me/organizations", {}, loadingTeams);
