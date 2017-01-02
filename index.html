@@ -11,6 +11,7 @@
     <script>
         authenticationSuccess = function() {
             $("connect-message").text("success!");
+            Trello.get("members/me/organizations", {}, loadingTeams);
         };
 
         authenticationFailure = function() {
@@ -41,11 +42,11 @@
             });
             if (Trello.authorized()) {
                 $("#connect").hide();
+                Trello.get("members/me/organizations", {}, loadingTeams);
             } else {
                 $("#connect").show();
             }
 
-            Trello.get("members/me/organizations", {}, loadingTeams);
         });
     </script>
 </html>
