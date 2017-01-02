@@ -58,7 +58,7 @@
         $(function() {
             $("#connect").click(authorize);
             $("#teams").change(function(e) {
-                loadTeam($("option:selected", this).value);
+                loadTeam($("option:selected", this).val());
             });
 
             if (Trello.authorized()) {
