@@ -73,6 +73,9 @@
             $("#teams").change(function(e) {
                 loadTeam($("option:selected", this).val());
             });
+            $("#boards").change(function(e) {
+                loadBoard($("option:selected", this).val());
+            });
 
             if (Trello.authorized()) {
                 $("#connect").hide();
