@@ -1,4 +1,51 @@
 <html>
+    <head>
+        <title>Trello Automation Tool</title>
+    </head>
+    <body>
+        <p><button id="connect" value="connect">connect</button><span id="connect-message"></span></p>
+        <p><select id="teams"></select></p>
+    </body>
     <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
     <script src="https://api.trello.com/1/client.js?key=d9f4154055496716605cf40fc5ef31ea"></script>
+    <script>
+        authenticationSuccess = function() {
+            $("connect-message").text("success!");
+        };
+
+        authenticationFailure = function() {
+            $("connect-message").text("error!");
+        };
+
+        loadingTeams = function(teams) {
+            $.each(teams, function (i, team) {
+                $('#teams').append($('<option>', { 
+                    value: team.id,
+                    text : team.displayName 
+                }));
+            });
+        };
+
+        $(function() {
+            $("#connect").click(function() {
+                Trello.authorize({
+                  type: 'popup',
+                  name: 'Trello Automation Tool',
+                  scope: {
+                    read: 'true',
+                    write: 'true' },
+                  expiration: 'never',
+                  success: authenticationSuccess,
+                  error: authenticationFailure
+                });
+            });
+            if (Trello.authorized()) {
+                $("#connect").hide();
+            } else {
+                $("#connect").show();
+            }
+
+            Trello.get("members/me/organizations", {}, loadingTeams);
+        });
+    </script>
 </html>
