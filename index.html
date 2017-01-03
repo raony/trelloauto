@@ -60,17 +60,28 @@
             Trello.get("board/" + board_id + "/cards/", {}, loadingCards);
         };
 
+        var allCards;
+
         loadingCards = function(cards) {
             $("#cards").empty();
+            allCards = [];
             $.each(cards, function (i, card) {
                 if (!/^\[\w+\] /.test(card.name)) {
+                    allCards.push(card);
                     $("#cards").append("<span>" + card.name + " -> [" + card.shortLink + "] " + card.name + "</span><br/>");
                 }
             });
         };
 
-        updateCard = function(card_id) {
-            Trello
+        updateAllCards = function() {
+            for (var card in allCards) {
+                updateCard(card.id, card.shortLink, card.name);
+            }
+        };
+
+
+        updateCard = function(card_id, shortLink, name) {
+            Trello.put("card/" + card_id, { name: "[" + shortLink + "] " + name }); 
         };
 
         $(function() {
