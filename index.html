@@ -74,11 +74,10 @@
         };
 
         updateAllCards = function() {
-            for (var card in allCards) {
+            for (var card of allCards) {
                 updateCard(card.id, card.shortLink, card.name);
             }
         };
-
 
         updateCard = function(card_id, shortLink, name) {
             Trello.put("card/" + card_id, { name: "[" + shortLink + "] " + name }); 
