@@ -61,11 +61,16 @@
         };
 
         loadingCards = function(cards) {
+            $("#cards").empty();
             $.each(cards, function (i, card) {
                 if (!/^\[\w+\] /.test(card.name)) {
                     $("#cards").append("<span>" + card.name + " -> [" + card.shortLink + "] " + card.name + "</span><br/>");
                 }
             });
+        };
+
+        updateCard = function(card_id) {
+            Trello
         };
 
         $(function() {
